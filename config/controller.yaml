@@ -1,0 +1,20 @@
+apiVersion: metacontroller.k8s.io/v1alpha1
+kind: CompositeController
+metadata:
+  name: bunker-controller
+spec:
+  generateSelector: true
+  parentResource:
+    apiVersion: articulate.com/v1alpha1
+    resource: bunkers
+  childResources:
+  - apiVersion: v1
+    resource: pods
+    updateStrategy:
+      method: Recreate
+  hooks:
+    sync:
+      webhook:
+        url: http://bunker-controller.bunker/sync
+
+
