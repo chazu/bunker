@@ -9,6 +9,9 @@ startup:
 
 create_webhook_script:
 
+update_hook:
+	kubectl delete configmap bunker-controller
+	kubectl create configmap bunker-controller --from-file=config/sync.py
 
 install:
 	#kubectl create ns metacontroller

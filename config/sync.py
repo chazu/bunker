@@ -10,27 +10,47 @@ class Controller(BaseHTTPRequestHandler):
 
     # Generate the desired child object(s).
     who = parent.get("spec", {}).get("who", "World")
-    desired_pods = [
+    desired_deployments = [
       {
-        "apiVersion": "v1",
-        "kind": "Pod",
+        "apiVersion": "apps/v1beta2",
+        "kind": "Deployment",
         "metadata": {
-          "name": parent["metadata"]["name"]
+          "name": parent["metadata"]["name"],
+          "labels": {
+            "app": parent["metadata"]["name"]
+          }
         },
         "spec": {
-          "restartPolicy": "OnFailure",
-          "containers": [
-            {
-              "name": "hello",
-              "image": "busybox",
-              "command": ["echo", "Hello, %s!" % who]
+          "replicas": 1,
+          "selector": {
+            "matchLabels": { "app": parent["metadata"]["name"] }
+          },
+          "template": {
+            "metadata": {
+              "labels": {
+                "app": parent["metadata"]["name"]
+              }
+            },
+            "spec": {
+              "containers": [
+                {
+                  "name": "blast-radius",
+                  "image": "28mm/blast-radius",
+                  "ports": [
+                    {
+                      "containerPort": 5000,
+                      "targetPort": 5000
+                    }
+                  ]
+                }
+              ]
             }
-          ]
+          }
         }
       }
     ]
 
-    return {"status": desired_status, "children": desired_pods}
+    return {"status": desired_status, "children": desired_deployments}
 
   def do_POST(self):
     # Serve the sync() function as a JSON webhook.

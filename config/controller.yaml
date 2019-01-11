@@ -8,13 +8,19 @@ spec:
     apiVersion: articulate.com/v1alpha1
     resource: bunkers
   childResources:
-  - apiVersion: v1
-    resource: pods
+  - apiVersion: v1beta2
+    resource: deployments
     updateStrategy:
       method: Recreate
+  # - apiVersion: v1
+  #   resource: services
+  #   updateStrategy:
+  #     method: Recreate
+  # - apiVersion: extensions/v1beta1
+  #   resource: ingresses
+  #   updateStrategy:
+  #     method: Recreate
   hooks:
     sync:
       webhook:
         url: http://bunker-controller.bunker/sync
-
-
