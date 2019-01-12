@@ -1,9 +1,9 @@
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  name: bunkers.articulate.com
+  name: bunkers.pyx.land
 spec:
-  group: articulate.com
+  group: pyx.land
   version: v1alpha1
   names:
     kind: Bunker

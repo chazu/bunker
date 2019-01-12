@@ -5,10 +5,10 @@ metadata:
 spec:
   generateSelector: true
   parentResource:
-    apiVersion: articulate.com/v1alpha1
+    apiVersion: pyx.land/v1alpha1
     resource: bunkers
   childResources:
-  - apiVersion: v1beta2
+  - apiVersion: apps/v1
     resource: deployments
     updateStrategy:
       method: Recreate

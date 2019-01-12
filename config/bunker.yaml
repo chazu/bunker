@@ -1,7 +1,8 @@
-apiVersion: articulate.com/v1alpha1
+apiVersion: pyx.land/v1alpha1
 kind: Bunker
 metadata:
   name: no2
 spec:
   repository: chazu/bunker-terraform
   who: yr ma
+  

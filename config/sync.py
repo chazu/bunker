@@ -4,52 +4,58 @@ import json
 class Controller(BaseHTTPRequestHandler):
   def sync(self, parent, children):
     # Compute status based on observed state.
+    print("children")
+    print("--------")
+    print(children)
     desired_status = {
-      "pods": len(children["Pod.v1"])
+      "deployments": len(children["Deployment.apps/v1"])
     }
 
     # Generate the desired child object(s).
     who = parent.get("spec", {}).get("who", "World")
-    desired_deployments = [
-      {
-        "apiVersion": "apps/v1beta2",
-        "kind": "Deployment",
-        "metadata": {
-          "name": parent["metadata"]["name"],
-          "labels": {
-            "app": parent["metadata"]["name"]
-          }
-        },
-        "spec": {
-          "replicas": 1,
-          "selector": {
-            "matchLabels": { "app": parent["metadata"]["name"] }
+    if desired_status["deployments"] == 0:
+      desired_deployments = [
+        {
+          "apiVersion": "apps/v1beta2",
+          "kind": "Deployment",
+          "metadata": {
+            "name": parent["metadata"]["name"],
+            "labels": {
+              "app": parent["metadata"]["name"]
+            }
           },
-          "template": {
-            "metadata": {
-              "labels": {
-                "app": parent["metadata"]["name"]
-              }
+          "spec": {
+            "replicas": 1,
+            "selector": {
+              "matchLabels": { "app": parent["metadata"]["name"] }
             },
-            "spec": {
-              "containers": [
-                {
-                  "name": "blast-radius",
-                  "image": "28mm/blast-radius",
-                  "ports": [
-                    {
-                      "containerPort": 5000,
-                      "targetPort": 5000
-                    }
-                  ]
+            "template": {
+              "metadata": {
+                "labels": {
+                  "app": parent["metadata"]["name"]
                 }
-              ]
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "name": "blast-radius",
+                    "image": "28mm/blast-radius",
+                    "ports": [
+                      {
+                        "containerPort": 5000,
+                        "targetPort": 5000
+                      }
+                    ]
+                  }
+                ]
+              }
             }
           }
         }
-      }
-    ]
-
+      ]
+    else:
+      desired_deployments = []
+  
     return {"status": desired_status, "children": desired_deployments}
 
   def do_POST(self):
